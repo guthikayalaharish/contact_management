@@ -1,7 +1,12 @@
+// src/controllers/userController.js
+
 const db = require('../models');
 const User = db.User; // Ensure you're getting the User model
 
-// Login user function
+exports.registerUser = async (req, res) => {
+    // Your register logic here
+};
+
 exports.loginUser = async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -11,18 +16,23 @@ exports.loginUser = async (req, res) => {
             return res.status(400).json({ message: 'Username and password are required' });
         }
 
-        // Find user by username
         const user = await User.findOne({ where: { username } });
 
-        // Check if user exists and password matches (use hashing in a real app)
-        if (!user || user.password !== password) {
-            return res.status(401).json({ message: 'Invalid username or password' });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        // Optionally, send back user info (omit password)
-        res.status(200).json({ message: 'Login successful', user: { id: user.id, username: user.username } });
+        // Here you would check the password (this is just an example)
+        // If you are hashing passwords, use bcrypt to compare them
+        if (user.password !== password) {
+            return res.status(401).json({ message: 'Invalid password' });
+        }
+
+        // Return success message or user data
+        res.status(200).json({ message: 'Login successful', user });
     } catch (error) {
-        console.error("Error logging in:", error);
+        console.error("Error logging in user:", error);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
