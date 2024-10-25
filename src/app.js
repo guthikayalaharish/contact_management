@@ -1,3 +1,5 @@
+// src/app.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user'); // Ensure this import is present
@@ -15,6 +17,9 @@ app.use('/api/users', userRoutes);
 db.sequelize.sync()
     .then(() => {
         console.log("Database & tables created!");
+    })
+    .catch((error) => {
+        console.error("Error creating database & tables:", error);
     });
 
 // Start the server
